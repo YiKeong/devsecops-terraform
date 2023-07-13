@@ -48,7 +48,7 @@ varaiable do_size {
 
 variable do_ssh_key {
     type = string
-    default = "devsecops"
+    default = "www-1"
 }
 
 variable ssh_private_key {

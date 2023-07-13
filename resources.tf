@@ -1,13 +1,13 @@
 #images
 resource "docker_image" "bgg-database" {
-    name = "chukmunlee/bgg-database:${var.database_version}"
+    name = "chukmunnlee/bgg-database:${var.database_version}"
 }
 
 resource "docker_image" "bgg-backend" {
-    name = "chukmunlee/bgg-backend:${var.backend_version}"
+    name = "chukmunnlee/bgg-backend:${var.backend_version}"
 }
 
-resource "docker_network" "bgg-network" {
+resource "docker_network" "bgg-net" {
     name = "${var.app_namespace}-bgg-net"
 }
 
@@ -20,7 +20,7 @@ resource "docker_container" "bgg-database" {
     name = "${var.app_namespace}-bgg-database"
     image = docker_image.bgg-database.image_id
     networks_advanced {
-        name = docker_network.bgg-net.id
+        name = docker_network.bgg-network.id
     }
 
     volumes {
@@ -58,7 +58,7 @@ resource "docker_container" "bgg-backend" {
             ports = docker_container.bgg-backend([*].ports[0].external)
         })
     }
-    data "digitalocean_ssh_key" "devsecops" {
+    data "digitalocean_ssh_key" "www-1" {
         name = var.do_ssh_key
     }
 
@@ -67,7 +67,7 @@ resource "docker_container" "bgg-backend" {
         image = var.do_image
         region = var.do_region
         size = var.do_size
-        ssh_keys = [ data.data.digitalocean_ssh_key.devsecops.id ]
+        ssh_keys = [ data.digitalocean_ssh_key.www-1.id ]
 
         connection { 
             type ="ssh"
